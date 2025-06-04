@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coqueta - Centro de Belleza Manicurista</title>
+    <link rel="icon" type="image/svg+xml" href="asset/spa-solid (1).svg">
+
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#dc2878',
+                        secondary: '#dc2878',
+                        dark: '#3a3a3a',
+                        light: '#fff5f7',
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        script: ['"Dancing Script"', 'cursive']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'wiggle': 'wiggle 1s ease-in-out infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        .animate-delay-100 {
+            animation-delay: 100ms;
+        }
+
+        .animate-delay-200 {
+            animation-delay: 200ms;
+        }
+
+        .animate-delay-300 {
+            animation-delay: 300ms;
+        }
+
+        .animate-delay-400 {
+            animation-delay: 400ms;
+        }
+
+        .animate-delay-500 {
+            animation-delay: 500ms;
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body id="inicio" class="font-sans text-dark bg-gray-50 antialiased">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-white shadow-md transition-all duration-300">
+        <div class="container mx-auto px-4 py-5">
+            <div class="flex justify-between items-center">
+                <!-- Logo y marca -->
+                <a href="#inicio">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-spa text-2xl text-primary"></i>
+                        <span class="text-xl font-bold text-dark">COQUETA</span>
+                    </div>
+                </a>
+
+
+                <!-- Botón menú móvil -->
+                <button class="md:hidden focus:outline-none transition-transform hover:scale-110"
+                    id="mobile-menu-button" aria-label="Menú">
+                    <svg class="w-6 h-6 text-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
+                <!-- Menú desktop -->
+                <div class="hidden md:flex space-x-8" id="navbar-menu">
+                    <a href="#servicios"
+                        class="text-dark font-medium hover:text-primary transition duration-300 flex items-center">Servicios
+                    </a>
+                    <a href="#galeria"
+                        class="text-dark font-medium hover:text-primary transition duration-300 flex items-center">
+                        Galería
+                    </a>
+                    <a href="#reservas"
+                        class="text-dark font-medium hover:text-primary transition duration-300 flex items-center">
+                        Reservas
+                    </a>
+                    <a href="#contacto"
+                        class="text-dark font-medium hover:text-primary transition duration-300 flex items-center">
+                        Contacto
+                    </a>
+                </div>
+            </div>
+
+            <!-- Menú móvil -->
+            <div class="md:hidden hidden mt-2 py-2 space-y-2" id="mobile-menu">
+                <a href="#servicios"
+                    class="block py-2 px-4 hover:bg-light rounded transition duration-300 flex items-center">
+                    <i class="fas fa-hand-sparkles mr-3 text-primary"></i> Servicios
+                </a>
+                <a href="#galeria"
+                    class="block py-2 px-4 hover:bg-light rounded transition duration-300 flex items-center">
+                    <i class="fas fa-images mr-3 text-primary"></i> Galería
+                </a>
+                <a href="#reservas"
+                    class="block py-2 px-4 hover:bg-light rounded transition duration-300 flex items-center">
+                    <i class="fas fa-calendar-check mr-3 text-primary"></i> Reservas
+                </a>
+                <a href="#contacto"
+                    class="block py-2 px-4 hover:bg-light rounded transition duration-300 flex items-center">
+                    <i class="fas fa-envelope mr-3 text-primary"></i> Contacto
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative bg-cover bg-center h-screen flex items-center justify-center"
+        style="background-image: url('Fon2do.jpg')">
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div class="container mx-auto px-4 z-10 text-center text-white">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg animate-fade-in-up">
+                <span class="font-script text-5xl md:text-6xl lg:text-7xl block mb-2">Coqueta</span>
+                Tu Belleza en Buenas Manos
+            </h1>
+            <p class="text-lg md:text-xl max-w-2xl mx-auto mb-8 drop-shadow-sm animate-fade-in-up animate-delay-200">
+                <i class="fas fa-quote-left text-primary mr-2"></i>
+                Centro de belleza moderno y exclusivo, especializado en servicios manicuristas de alta calidad.
+                <i class="fas fa-quote-right text-primary ml-2"></i>
+            </p>
+            <div class="animate-fade-in-up animate-delay-400">
+                <a href="#reservas"
+                    class="bg-primary hover:bg-secondary text-white font-semibold py-3 px-8 rounded-full transition inline-flex items-center transform hover:scale-105 shadow-lg">
+                    <i class="fas fa-calendar-plus mr-2"></i> Reserva Ahora
+                </a>
+            </div>
+
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce-slow">
+                <a href="#servicios" class="text-white text-3xl">
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicios" class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 animate-fade-in-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 relative inline-block">
+                    Nuestros Servicios
+                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-primary mt-4"></span>
+                </h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Ofrecemos una amplia gama de servicios profesionales para el cuidado y embellecimiento de tus uñas.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="services-container">
+                <!-- Services will be loaded here via API -->
+                <div class="col-span-full text-center">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary">
+                    </div>
+                    <span class="sr-only">Cargando servicios...</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-20 bg-light">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="lg:w-1/2 mb-10 lg:mb-0 lg:pr-10 animate-fade-in">
+                    <div class="relative rounded-xl overflow-hidden shadow-xl">
+                        <img src="asset/Diseño sin título.jpg" alt="Salón de belleza Coqueta" class="w-full h-auto">
+                        <div class="absolute inset-0 bg-primary bg-opacity-20"></div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 animate-fade-in-up">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">
+                        <span class="text-primary">Experiencia</span> y Calidad en Cada Detalle
+                    </h2>
+                    <p class="text-gray-600 mb-6">
+                        Coqueta es un centro de belleza moderno y exclusivo, especializado en servicios manicuristas de
+                        alta calidad. Ubicado en el corazón de la ciudad, ofrece una experiencia única para quienes
+                        buscan
+                        cuidar y embellecer sus manos con los mejores tratamientos y técnicas disponibles.
+
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-700">Materiales de primera calidad</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-700">Protocolos estrictos de higiene</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-700">Productos hipoalergénicos</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-700">Ambiente relajante y exclusivo</span>
+                        </li>
+                    </ul>
+                    <div class="flex space-x-4">
+                        <a href="#reservas"
+                            class="bg-primary hover:bg-secondary text-white font-semibold py-3 px-6 rounded-full transition transform hover:scale-105 flex items-center">
+                            <i class="fas fa-calendar-alt mr-2"></i> Reservar
+                        </a>
+                        <a href="#contacto"
+                            class="border border-primary text-primary hover:bg-primary hover:text-white font-semibold py-3 px-6 rounded-full transition transform hover:scale-105 flex items-center">
+                            <i class="fas fa-phone-alt mr-2"></i> Contactarnos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="galeria" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 animate-fade-in-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 relative inline-block">
+                    Nuestro Trabajo
+                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-primary mt-4"></span>
+                </h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Algunos ejemplos de nuestros diseños y trabajos realizados a clientes satisfechos.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Gallery Items -->
+                <div
+                    class="gallery-item relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-500 h-64 animate-fade-in">
+                    <img src="asset/1.jpg">
+                    <div
+                        class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 transition duration-300">
+                        <div class="text-white text-center p-4">
+                            <i class="fas fa-expand text-2xl mb-2"></i>
+                            <h4 class="font-bold">Diseño Clásico Francés</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="gallery-item relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-500 h-64 animate-fade-in animate-delay-100">
+                    <img src="asset/2.jpg" alt="Uñas acrílicas"
+                        class="w-full h-full object-cover transition duration-700 hover:scale-110">
+                    <div
+                        class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 transition duration-300">
+                        <div class="text-white text-center p-4">
+                            <i class="fas fa-expand text-2xl mb-2"></i>
+                            <h4 class="font-bold">Uñas Acrílicas</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="gallery-item relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-500 h-64 animate-fade-in animate-delay-200">
+                    <img src="asset/3.jpg" alt="Diseño de uñas"
+                        class="w-full h-full object-cover transition duration-700 hover:scale-110">
+                    <div
+                        class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 transition duration-300">
+                        <div class="text-white text-center p-4">
+                            <i class="fas fa-expand text-2xl mb-2"></i>
+                            <h4 class="font-bold">Diseño Artístico</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="gallery-item relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-500 h-64 animate-fade-in">
+                    <img src="asset/4.jpg" alt="Tratamiento de manos"
+                        class="w-full h-full object-cover transition duration-700 hover:scale-110">
+                    <div
+                        class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 transition duration-300">
+                        <div class="text-white text-center p-4">
+                            <i class="fas fa-expand text-2xl mb-2"></i>
+                            <h4 class="font-bold">Tratamiento de Manos</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="gallery-item relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-500 h-64 animate-fade-in animate-delay-100">
+                    <img src="asset/5.jpg" alt="Esmaltado semipermanente"
+                        class="w-full h-full object-cover transition duration-700 hover:scale-110">
+                    <div
+                        class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 transition duration-300">
+                        <div class="text-white text-center p-4">
+                            <i class="fas fa-expand text-2xl mb-2"></i>
+                            <h4 class="font-bold">Esmaltado Semipermanente</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="gallery-item relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-500 h-64 animate-fade-in animate-delay-200">
+                    <img src="asset/6.jpg" alt="Uñas decoradas"
+                        class="w-full h-full object-cover transition duration-700 hover:scale-110">
+                    <div
+                        class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 transition duration-300">
+                        <div class="text-white text-center p-4">
+                            <i class="fas fa-expand text-2xl mb-2"></i>
+                            <h4 class="font-bold">Diseño Premium</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20 bg-light">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 animate-fade-in-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 relative inline-block">
+                    Lo que dicen nuestras clientas
+                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-primary mt-4"></span>
+                </h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Testimonios reales de clientas satisfechas con nuestros servicios.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Testimonials -->
+                <div
+                    class="testimonial-card bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition duration-500 animate-fade-in">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 rounded-full overflow-hidden border-4 border-primary border-opacity-20">
+                            <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="Cliente satisfecha"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="font-bold">María Fernanda</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">
+                        <i class="fas fa-quote-left text-primary opacity-30 mr-2"></i>
+                        Excelente servicio! Mis uñas quedaron perfectas y duraron más de 3 semanas sin ningún problema.
+                        Las profesionales son muy detallistas y el lugar es super acogedor.
+                        <i class="fas fa-quote-right text-primary opacity-30 ml-2"></i>
+                    </p>
+                </div>
+
+                <div
+                    class="testimonial-card bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition duration-500 animate-fade-in animate-delay-200">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 rounded-full overflow-hidden border-4 border-primary border-opacity-20">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Cliente satisfecha"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="font-bold">Carolina Gómez</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">
+                        <i class="fas fa-quote-left text-primary opacity-30 mr-2"></i>
+                        Nunca había tenido un manicure tan perfecto! El diseño que me hicieron fue exactamente como lo
+                        quería. Volveré una y otra vez, vale cada peso.
+                        <i class="fas fa-quote-right text-primary opacity-30 ml-2"></i>
+                    </p>
+                </div>
+
+                <div
+                    class="testimonial-card bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition duration-500 animate-fade-in animate-delay-400">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 rounded-full overflow-hidden border-4 border-primary border-opacity-20">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Cliente satisfecha"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="font-bold">Laura Rodríguez</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">
+                        <i class="fas fa-quote-left text-primary opacity-30 mr-2"></i>
+                        Me encanta la atención personalizada que dan en Coqueta. Siempre me siento consentida y mis uñas
+                        quedan impecables. Recomendado 100%.
+                        <i class="fas fa-quote-right text-primary opacity-30 ml-2"></i>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reservation Section -->
+    <section id="reservas" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 animate-fade-in-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 relative inline-block">
+                    Reserva tu Cita
+                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-primary mt-4"></span>
+                </h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Agenda tu cita con nosotros en simples pasos. ¡Te esperamos!
+                </p>
+            </div>
+
+            <div class="flex justify-center">
+                <div class="w-full lg:w-3/4">
+                    <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
+                        <div class="p-8">
+                            <!-- Reservation Steps -->
+                            <div class="relative mb-12">
+                                <div class="flex justify-between">
+                                    <div class="step flex flex-col items-center relative z-10" id="step1-indicator">
+                                        <div
+                                            class="step-number w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold mb-2 transition duration-300">
+                                            1</div>
+                                        <div
+                                            class="step-label text-sm text-primary font-medium transition duration-300">
+                                            Profesional</div>
+                                    </div>
+                                    <div class="step flex flex-col items-center relative z-10" id="step2-indicator">
+                                        <div
+                                            class="step-number w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold mb-2 transition duration-300">
+                                            2</div>
+                                        <div class="step-label text-sm text-gray-500 transition duration-300">Servicio
+                                        </div>
+                                    </div>
+                                    <div class="step flex flex-col items-center relative z-10" id="step3-indicator">
+                                        <div
+                                            class="step-number w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold mb-2 transition duration-300">
+                                            3</div>
+                                        <div class="step-label text-sm text-gray-500 transition duration-300">Fecha y
+                                            Hora</div>
+                                    </div>
+                                    <div class="step flex flex-col items-center relative z-10" id="step4-indicator">
+                                        <div
+                                            class="step-number w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold mb-2 transition duration-300">
+                                            4</div>
+                                        <div class="step-label text-sm text-gray-500 transition duration-300">
+                                            Confirmación</div>
+                                    </div>
+                                </div>
+                                <div class="absolute top-5 left-0 right-0 h-1 bg-gray-200 z-0">
+                                    <div class="h-full bg-primary transition-all duration-500 ease-in-out"
+                                        id="progress-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Step 1: Select Professional -->
+                            <div id="step1" class="reservation-step animate-fade-in">
+                                <h4 class="text-xl font-semibold mb-6 flex items-center">
+                                    <i class="fas fa-user-tie text-primary mr-3"></i> Selecciona un Profesional
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="professionalsContainer">
+                                    <!-- Professionals will be loaded here via API -->
+                                    <div class="col-span-full text-center">
+                                        <div
+                                            class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary">
+                                        </div>
+                                        <span class="sr-only">Cargando profesionales...</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end mt-8">
+                                    <button id="nextToStep2"
+                                        class="bg-primary hover:bg-secondary text-white font-semibold py-3 px-8 rounded-full transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                        disabled>
+                                        Siguiente <i class="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Select Service -->
+                            <div id="step2" class="reservation-step hidden animate-fade-in">
+                                <h4 class="text-xl font-semibold mb-6 flex items-center">
+                                    <i class="fas fa-hand-sparkles text-primary mr-3"></i> Selecciona un Servicio
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="servicesReservationContainer">
+                                    <!-- Services will be loaded here via API -->
+                                    <div class="col-span-full text-center">
+                                        <div
+                                            class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary">
+                                        </div>
+                                        <span class="sr-only">Cargando servicios...</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between mt-8">
+                                    <button id="backToStep1"
+                                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-8 rounded-full transition transform hover:scale-105">
+                                        <i class="fas fa-arrow-left mr-2"></i> Anterior
+                                    </button>
+                                    <button id="nextToStep3"
+                                        class="bg-primary hover:bg-secondary text-white font-semibold py-3 px-8 rounded-full transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                        disabled>
+                                        Siguiente <i class="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Select Date and Time -->
+                            <div id="step3" class="reservation-step hidden animate-fade-in">
+                                <h4 class="text-xl font-semibold mb-6 flex items-center">
+                                    <i class="fas fa-calendar-day text-primary mr-3"></i> Selecciona Fecha y Hora
+                                </h4>
+                                <div class="mb-8">
+                                    <label for="reservationDate"
+                                        class="block text-gray-700 font-medium mb-3">Fecha</label>
+                                    <div class="relative">
+                                        <input type="date"
+                                            class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-white"
+                                            id="reservationDate" required>
+                                        <div
+                                            class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="timeSlotsContainer" class="mb-8">
+                                    <label class="block text-gray-700 font-medium mb-3">Horarios Disponibles</label>
+                                    <p class="text-gray-500">Por favor selecciona una fecha para ver los horarios
+                                        disponibles</p>
+                                </div>
+                                <div class="flex justify-between mt-8">
+                                    <button id="backToStep2"
+                                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-8 rounded-full transition transform hover:scale-105">
+                                        <i class="fas fa-arrow-left mr-2"></i> Anterior
+                                    </button>
+                                    <button id="nextToStep4"
+                                        class="bg-primary hover:bg-secondary text-white font-semibold py-3 px-8 rounded-full transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                        disabled>
+                                        Siguiente <i class="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Confirm Reservation -->
+                            <div id="step4" class="reservation-step hidden animate-fade-in">
+                                <h4 class="text-xl font-semibold mb-6 flex items-center">
+                                    <i class="fas fa-user-edit text-primary mr-3"></i> Información del Cliente
+                                </h4>
+                                <form id="reservationForm">
+                                    <input type="hidden" id="reservationId">
+                                    <input type="hidden" id="selectedProfessional">
+                                    <input type="hidden" id="selectedService">
+                                    <input type="hidden" id="selectedDateTime">
+
+                                    <div class="mb-6">
+                                        <label for="clientName" class="block text-gray-700 font-medium mb-3">Nombre
+                                            Completo</label>
+                                        <div class="relative">
+                                            <input type="text"
+                                                class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                                id="clientName" required placeholder="Tu nombre completo">
+                                            <i class="fas fa-user absolute right-3 top-3 text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <div class="mb-6">
+                                        <label for="clientEmail" class="block text-gray-700 font-medium mb-3">Correo
+                                            Electrónico</label>
+                                        <div class="relative">
+                                            <input type="email"
+                                                class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                                id="clientEmail" required placeholder="tu@email.com">
+                                            <i class="fas fa-envelope absolute right-3 top-3 text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <div class="mb-6">
+                                        <label for="clientPhone"
+                                            class="block text-gray-700 font-medium mb-3">Teléfono</label>
+                                        <div class="relative">
+                                            <input type="tel"
+                                                class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                                id="clientPhone" required placeholder="300 123 4567">
+                                            <i class="fas fa-phone-alt absolute right-3 top-3 text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <div class="mb-8">
+                                        <label for="clientId" class="block text-gray-700 font-medium mb-3">ID de Cliente
+                                            (opcional)</label>
+                                        <div class="relative">
+                                            <input type="number"
+                                                class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                                id="clientId" placeholder="Si ya eres cliente">
+                                            <i class="fas fa-id-card absolute right-3 top-3 text-gray-400"></i>
+                                        </div>
+                                        <p class="text-gray-500 text-sm mt-2">Si no tienes un ID, déjalo en blanco.</p>
+                                    </div>
+                                    <div class="flex justify-between mt-8">
+                                        <button id="backToStep3" type="button"
+                                            class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-8 rounded-full transition transform hover:scale-105">
+                                            <i class="fas fa-arrow-left mr-2"></i> Anterior
+                                        </button>
+                                        <button type="submit" id="submitReservation"
+                                            class="bg-primary hover:bg-secondary text-white font-semibold py-3 px-8 rounded-full transition transform hover:scale-105">
+                                            <i class="fas fa-check-circle mr-2"></i> Confirmar Reserva
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="py-20 bg-light">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 animate-fade-in-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 relative inline-block">
+                    Contáctanos
+                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-primary mt-4"></span>
+                </h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Estamos aquí para responder todas tus preguntas y atender tus necesidades.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <!-- Contact Cards -->
+                <div
+                    class="bg-white rounded-xl shadow-md p-8 text-center transition duration-500 hover:shadow-xl animate-fade-in">
+                    <div class="text-primary text-4xl mb-4">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">Ubicación</h3>
+                    <p class="text-gray-600">Calle 45 #12-34, Bogotá, Colombia</p>
+                    <a href="#" class="inline-block mt-4 text-primary hover:text-secondary transition">
+                        <i class="fas fa-directions mr-2"></i> Ver en mapa
+                    </a>
+                </div>
+
+                <div
+                    class="bg-white rounded-xl shadow-md p-8 text-center transition duration-500 hover:shadow-xl animate-fade-in animate-delay-200">
+                    <div class="text-primary text-4xl mb-4">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">Teléfono</h3>
+                    <p class="text-gray-600">+57 300 555 6789</p>
+                    <a href="tel:+573005556789" class="inline-block mt-4 text-primary hover:text-secondary transition">
+                        <i class="fas fa-phone mr-2"></i> Llamar ahora
+                    </a>
+                </div>
+
+                <div
+                    class="bg-white rounded-xl shadow-md p-8 text-center transition duration-500 hover:shadow-xl animate-fade-in animate-delay-400">
+                    <div class="text-primary text-4xl mb-4">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">Email</h3>
+                    <p class="text-gray-600">contacto@coqueta.com.co</p>
+                    <a href="mailto:contacto@coqueta.com.co"
+                        class="inline-block mt-4 text-primary hover:text-secondary transition">
+                        <i class="fas fa-paper-plane mr-2"></i> Enviar mensaje
+                    </a>
+                </div>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-xl shadow-md p-8">
+                    <h3 class="text-xl font-semibold text-center mb-8 flex items-center justify-center">
+                        <i class="fas fa-clock text-primary mr-3"></i> Horario de Atención
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="text-center">
+                            <h4 class="font-bold text-lg mb-4">Lunes a Viernes</h4>
+                            <div class="flex items-center justify-center text-gray-600">
+                                <i class="far fa-clock mr-2 text-primary"></i> 9:00 AM - 6:00 PM
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <h4 class="font-bold text-lg mb-4">Sábados</h4>
+                            <div class="flex items-center justify-center text-gray-600">
+                                <i class="far fa-clock mr-2 text-primary"></i> 10:00 AM - 4:00 PM
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center text-gray-500">
+                        <i class="fas fa-info-circle mr-2 text-primary"></i> Domingos y festivos cerrado
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <footer class="bg-dark text-white pt-16 pb-8">
+    <div class="container mx-auto px-4 text-center">
+        <!-- Brand Info Centered -->
+        <div class="flex flex-col items-center mb-8">
+            <h5 class="text-xl font-bold mb-4 flex items-center">
+                <i class="fas fa-spa text-primary mr-3 animate-pulse-slow"></i> COQUETA
+            </h5>
+            <p class="text-gray-300 max-w-md mx-auto">
+                Centro de belleza especializado en servicios manicuristas de alta calidad en Bogotá.
+            </p>
+        </div>
+
+        <!-- Social Links Centered -->
+        <div class="flex justify-center space-x-4 mb-8">
+            <a href="#"
+                class="w-10 h-10 rounded-full bg-gray-700 hover:bg-primary flex items-center justify-center transition transform hover:scale-110">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#"
+                class="w-10 h-10 rounded-full bg-gray-700 hover:bg-primary flex items-center justify-center transition transform hover:scale-110">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#"
+                class="w-10 h-10 rounded-full bg-gray-700 hover:bg-primary flex items-center justify-center transition transform hover:scale-110">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="#"
+                class="w-10 h-10 rounded-full bg-gray-700 hover:bg-primary flex items-center justify-center transition transform hover:scale-110">
+                <i class="fab fa-tiktok"></i>
+            </a>
+        </div>
+
+        <hr class="border-gray-700 my-6 mx-auto w-3/4">
+
+        <!-- Links Centered -->
+        <div class="flex flex-col items-center space-y-4">
+            <div class="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-8">
+                <a href="https://github.com/jokeros121" class="text-gray-400 hover:text-white transition flex items-center justify-center">
+                    <i class="fas fa-code text-primary mr-2"></i> Desarrollada por: Algemiro Teran
+                </a>
+                <a href="login.html" class="text-gray-400 hover:text-white transition flex items-center justify-center">
+                    <i class="fas fa-lock text-primary mr-2"></i> Panel Administrativo
+                </a>
+            </div>
+            
+            <!-- Copyright moved below -->
+            <p class="text-gray-400 mt-4">
+                &copy; 2023 Coqueta - Todos los derechos reservados.
+            </p>
+        </div>
+    </div>
+</footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/573105313941"
+        class="fixed bottom-6 right-6 w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center shadow-xl z-40 hover:bg-green-600 transition transform hover:scale-110 animate-wiggle">
+        <i class="fab fa-whatsapp text-2xl"></i>
+    </a>
+
+    <!-- Confirmation Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+        id="confirmationModal">
+        <div class="bg-white rounded-xl overflow-hidden w-full max-w-md animate-fade-in">
+            <div class="bg-primary text-white p-6">
+                <div class="flex justify-between items-center">
+                    <h5 class="text-xl font-bold flex items-center">
+                        <i class="fas fa-check-circle mr-3"></i> Reserva Confirmada
+                    </h5>
+                    <button type="button" class="text-white focus:outline-none hover:text-gray-200 transition"
+                        id="closeConfirmationModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6" id="confirmationDetails">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div class="p-4 bg-gray-100 flex justify-end">
+                <button type="button"
+                    class="bg-primary hover:bg-secondary text-white font-semibold py-2 px-6 rounded-lg transition transform hover:scale-105"
+                    id="confirmCloseModal">
+                    <i class="fas fa-thumbs-up mr-2"></i> ¡Perfecto!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" id="errorModal">
+        <div class="bg-white rounded-xl overflow-hidden w-full max-w-md animate-fade-in">
+            <div class="bg-red-600 text-white p-6">
+                <div class="flex justify-between items-center">
+                    <h5 class="text-xl font-bold flex items-center">
+                        <i class="fas fa-exclamation-triangle mr-3"></i> Error en la Reserva
+                    </h5>
+                    <button type="button" class="text-white focus:outline-none hover:text-gray-200 transition"
+                        id="closeErrorModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6" id="errorDetails">
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span id="errorMessage">Error al procesar la reserva. Por favor intenta nuevamente.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 bg-gray-100 flex justify-end">
+                <button type="button"
+                    class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition transform hover:scale-105"
+                    id="errorCloseModal">
+                    <i class="fas fa-redo mr-2"></i> Intentar de nuevo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" id="loadingSpinner">
+        <div class="bg-white rounded-xl p-8 text-center">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4">
+            </div>
+            <p class="text-lg font-semibold">Procesando tu reserva...</p>
+        </div>
+    </div>  
+    <script src="js/index.js"></script>
+</body>
+
+</html>

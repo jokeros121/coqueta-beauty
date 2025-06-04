@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Coqueta</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root {
+      --primary: #ec4899;
+      --secondary: #fbcfe8;
+      --accent: #db2777;
+      --dark: #831843;
+      --light: #fdf2f8;
+    }
+
+    body {
+      background: url('Fon2do.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .divider {
+      height: 2px;
+      background: linear-gradient(to right, transparent, #831843, transparent);
+      margin: 1.5rem 0;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+      transition: all 0.3s;
+      background: white;
+    }
+
+    .input-group:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .input-group.error {
+      border-color: #f43f5e;
+      animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+
+    .input-group-text {
+      background-color: #f9fafb;
+      padding: 0.85rem 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+      transition: all 0.3s;
+    }
+
+    .input-group:focus-within .input-group-text {
+      color: var(--primary);
+    }
+
+    .form-control {
+      flex: 1;
+      padding: 0.85rem 1rem;
+      border: none;
+      outline: none;
+      background-color: transparent;
+      transition: all 0.3s;
+    }
+
+    .form-control::placeholder {
+      color: #9ca3af;
+      opacity: 1;
+    }
+
+    .btn-beauty {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      color: white;
+      padding: 0.85rem 1rem;
+      font-weight: 600;
+      border-radius: 0.75rem;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-beauty:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(219, 39, 119, 0.3);
+    }
+
+    .btn-beauty:active {
+      transform: translateY(0);
+    }
+
+    .btn-beauty::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+
+    .btn-beauty:hover::after {
+      transform: translateX(100%);
+    }
+
+    .btn-secondary-beauty {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      color: var(--dark);
+      padding: 0.85rem 1rem;
+      font-weight: 600;
+      border-radius: 0.75rem;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .btn-secondary-beauty:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      background: white;
+    }
+
+    .brand-logo {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .brand-logo i {
+      color: var(--primary);
+      margin-right: 0.75rem;
+      animation: pulse 2s infinite;
+      filter: drop-shadow(0 2px 4px rgba(219, 39, 119, 0.2));
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      cursor: pointer;
+      color: #6b7280;
+      transition: all 0.3s;
+    }
+
+    .password-toggle:hover {
+      color: var(--primary);
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen p-4">
+  <div class="login-container p-8 w-full max-w-md">
+    <div class="brand-logo">
+      <i class="fas fa-spa"></i>
+      <span>COQUETA</span>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <h2 class="text-center text-2xl font-semibold mb-6 text-gray-700">Inicio de Sesión</h2>
+
+    <form id="formLogin" class="space-y-5">
+      <div class="mb-4">
+        <label for="usuario" class="block text-sm font-medium text-gray-600 mb-2">Usuario</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="fas fa-user"></i></span>
+          <input type="text" class="form-control" id="usuario" placeholder="Ingresa tu usuario" required />
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="clave" class="block text-sm font-medium text-gray-600 mb-2">Contraseña</label>
+        <div class="input-group relative">
+          <span class="input-group-text"><i class="fas fa-lock"></i></span>
+          <input type="password" class="form-control pr-10" id="clave" placeholder="Ingresa tu contraseña" required />
+          <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-beauty" id="loginBtn">
+        <i class="fas fa-sign-in-alt mr-2"></i> Ingresar
+      </button>
+    </form>
+
+    <a href="index.html" class="btn-secondary-beauty mt-6">
+      <i class="fas fa-home mr-2"></i> Volver al inicio
+    </a>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard - Coqueta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 to-pink-100 p-4 min-h-screen">
+  <div class="container mx-auto bg-white p-6 rounded-xl shadow-lg">
+    <!-- Encabezado -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-pink-700 mb-4 md:mb-0">
+        <i class="fas fa-home mr-2"></i>Dashboard Resumen
+      </h1>
+      <div class="flex items-center space-x-2">
+        <span class="text-sm text-pink-600 hidden md:block">Actualizado: <span id="update-time" class="font-medium"></span></span>
+        <button onclick="cargarResumen()" class="bg-pink-100 hover:bg-pink-200 text-pink-700 px-3 py-1 rounded-lg transition-all duration-200 flex items-center">
+          <i class="fas fa-sync-alt mr-2"></i> Actualizar
+        </button>
+      </div>
+    </div>
+
+    <!-- Tarjetas de resumen -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <!-- Clientes -->
+      <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl p-4 shadow-md border border-pink-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-4xl font-bold text-pink-700" id="total-clientes">0</div>
+            <div class="text-md font-semibold text-pink-600 mt-1 flex items-center">
+              <i class="fa-solid fa-arrow-right mr-2"></i>Clientes
+            </div>
+          </div>
+          <div class="bg-pink-200/30 p-3 rounded-full">
+            <i class="fa-solid fa-users text-pink-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Servicios -->
+      <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl p-4 shadow-md border border-pink-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-4xl font-bold text-pink-700" id="total-servicios">0</div>
+            <div class="text-md font-semibold text-pink-600 mt-1 flex items-center">
+              <i class="fa-solid fa-arrow-right mr-2"></i>Servicios
+            </div>
+          </div>
+          <div class="bg-pink-200/30 p-3 rounded-full">
+            <i class="fa-solid fa-scissors text-pink-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profesionales -->
+      <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl p-4 shadow-md border border-pink-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-4xl font-bold text-pink-700" id="total-profesionales">0</div>
+            <div class="text-md font-semibold text-pink-600 mt-1 flex items-center">
+              <i class="fa-solid fa-arrow-right mr-2"></i>Profesionales
+            </div>
+          </div>
+          <div class="bg-pink-200/30 p-3 rounded-full">
+            <i class="fa-solid fa-user-tie text-pink-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reservas -->
+      <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl p-4 shadow-md border border-pink-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-4xl font-bold text-pink-700" id="total-reservas">0</div>
+            <div class="text-md font-semibold text-pink-600 mt-1 flex items-center">
+              <i class="fa-solid fa-arrow-right mr-2"></i>Reservas
+            </div>
+          </div>
+          <div class="bg-pink-200/30 p-3 rounded-full">
+            <i class="fas fa-calendar-check text-pink-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Gráfico lineal (Reservas por mes) -->
+      <div class="bg-white p-5 rounded-xl shadow-md border border-pink-50">
+        <h2 class="text-lg font-bold text-pink-600 flex items-center mb-4">
+          <i class="fas fa-chart-line mr-2"></i>Reservas mensuales
+        </h2>
+        <canvas id="lineChart" height="200"></canvas>
+      </div>
+
+      <!-- Gráfico de área (Clientes nuevos) -->
+      <div class="bg-white p-5 rounded-xl shadow-md border border-pink-50">
+        <h2 class="text-lg font-bold text-pink-600 flex items-center mb-4">
+          <i class="fas fa-chart-area mr-2"></i>Clientes nuevos
+        </h2>
+        <canvas id="areaChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Variables globales para los gráficos
+    let lineChart = null;
+    let areaChart = null;
+
+    // Actualizar hora de actualización
+    function updateTime() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('update-time').textContent = `Hoy a las ${timeString}`;
+    }
+    
+    // Verificar autenticación
+    function checkAuth() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Sesión expirada',
+          text: 'Serás redirigido al login.',
+          timer: 3000,
+          background: '#fff1f2',
+          color: '#831843',
+          confirmButtonColor: '#db2777'
+        }).then(() => window.location.href = '../index.html');
+        return false;
+      }
+      return true;
+    }
+
+    // Función para hacer fetch con manejo de errores
+    async function fetchData(url) {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(url, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        return await response.json();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de conexión',
+          text: 'No se pudieron cargar los datos. Por favor intenta nuevamente.',
+          confirmButtonColor: '#db2777'
+        });
+        return null;
+      }
+    }
+
+    // Función para generar datos de ejemplo para gráficos de series temporales
+    function generateSampleTimeSeriesData(months = 6) {
+      const monthsNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      const labels = monthsNames.slice(0, months);
+      
+      const reservationsData = labels.map((_, i) => Math.floor(Math.random() * 50) + 10 + i*5);
+      const clientsData = labels.map((_, i) => Math.floor(Math.random() * 20) + 5 + i*2);
+      
+      return { labels, reservationsData, clientsData };
+    }
+
+    // Función para inicializar gráficos con datos de prueba
+    function initChartsWithSampleData() {
+      // Datos de ejemplo para series temporales
+      const { labels, reservationsData, clientsData } = generateSampleTimeSeriesData();
+      
+      // Actualizar tarjetas con valores del último mes
+      document.getElementById('total-clientes').textContent = clientsData[clientsData.length-1] * 3;
+      document.getElementById('total-servicios').textContent = 8;
+      document.getElementById('total-profesionales').textContent = 5;
+      document.getElementById('total-reservas').textContent = reservationsData[reservationsData.length-1] * 2;
+
+      // Gráfico lineal (Reservas por mes)
+      const lineCtx = document.getElementById('lineChart').getContext('2d');
+      if (lineChart) lineChart.destroy();
+      
+      lineChart = new Chart(lineCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Reservas',
+            data: reservationsData,
+            borderColor: 'rgba(219, 39, 119, 1)',
+            backgroundColor: 'rgba(219, 39, 119, 0.1)',
+            tension: 0.3,
+            fill: false,
+            borderWidth: 2,
+            pointBackgroundColor: 'rgba(219, 39, 119, 1)',
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top'
+            },
+            tooltip: {
+              mode: 'index',
+              intersect: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(253, 242, 248, 0.5)'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+
+      // Gráfico de área (Clientes nuevos)
+      const areaCtx = document.getElementById('areaChart').getContext('2d');
+      if (areaChart) areaChart.destroy();
+      
+      areaChart = new Chart(areaCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Clientes nuevos',
+            data: clientsData,
+            borderColor: 'rgba(236, 72, 153, 1)',
+            backgroundColor: 'rgba(236, 72, 153, 0.2)',
+            tension: 0.3,
+            fill: true,
+            borderWidth: 2,
+            pointBackgroundColor: 'rgba(236, 72, 153, 1)',
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top'
+            },
+            tooltip: {
+              mode: 'index',
+              intersect: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(253, 242, 248, 0.5)'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+
+      updateTime();
+    }
+
+    // Función principal para cargar datos
+    async function cargarResumen() {
+      if (!checkAuth()) return;
+
+      // Mostrar loader
+      const loader = Swal.fire({
+        title: 'Cargando datos',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+        background: '#fff1f2'
+      });
+
+      try {
+        // Intentar cargar datos reales
+        const [clientes, reservas] = await Promise.all([
+          fetchData('https://coqueta.fluxis.com.co/api/clientes') || [],
+          fetchData('https://coqueta.fluxis.com.co/api/reservas') || []
+        ]);
+
+        // Si no hay datos, usar datos de ejemplo
+        if (!clientes || !reservas) {
+          await loader.close();
+          Swal.fire({
+            icon: 'info',
+            title: 'Modo demostración',
+            text: 'Mostrando datos de ejemplo',
+            timer: 2000,
+            background: '#fff1f2'
+          });
+          initChartsWithSampleData();
+          return;
+        }
+
+        // Procesar datos para gráficos temporales (ejemplo)
+        const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'];
+        const reservationsByMonth = [15, 22, 18, 27, 32, 40]; // Esto debería calcularse de los datos reales
+        const newClientsByMonth = [5, 8, 6, 10, 12, 15]; // Esto debería calcularse de los datos reales
+
+        // Actualizar tarjetas
+        document.getElementById('total-clientes').textContent = clientes.length || 0;
+        document.getElementById('total-reservas').textContent = reservas.length || 0;
+        document.getElementById('total-servicios').textContent = 8; // Valor fijo por ahora
+        document.getElementById('total-profesionales').textContent = 5; // Valor fijo por ahora
+
+        // Actualizar gráfico lineal (Reservas por mes)
+        const lineCtx = document.getElementById('lineChart').getContext('2d');
+        if (lineChart) lineChart.destroy();
+        
+        lineChart = new Chart(lineCtx, {
+          type: 'line',
+          data: {
+            labels: months,
+            datasets: [{
+              label: 'Reservas',
+              data: reservationsByMonth,
+              borderColor: 'rgba(219, 39, 119, 1)',
+              backgroundColor: 'rgba(219, 39, 119, 0.1)',
+              tension: 0.3,
+              fill: false,
+              borderWidth: 2,
+              pointBackgroundColor: 'rgba(219, 39, 119, 1)',
+              pointRadius: 4,
+              pointHoverRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top'
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+
+        // Actualizar gráfico de área (Clientes nuevos)
+        const areaCtx = document.getElementById('areaChart').getContext('2d');
+        if (areaChart) areaChart.destroy();
+        
+        areaChart = new Chart(areaCtx, {
+          type: 'line',
+          data: {
+            labels: months,
+            datasets: [{
+              label: 'Clientes nuevos',
+              data: newClientsByMonth,
+              borderColor: 'rgba(236, 72, 153, 1)',
+              backgroundColor: 'rgba(236, 72, 153, 0.2)',
+              tension: 0.3,
+              fill: true,
+              borderWidth: 2,
+              pointBackgroundColor: 'rgba(236, 72, 153, 1)',
+              pointRadius: 4,
+              pointHoverRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top'
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+
+        updateTime();
+      } catch (error) {
+        console.error('Error en cargarResumen:', error);
+        initChartsWithSampleData();
+      } finally {
+        await loader.close();
+      }
+    }
+
+    // Iniciar al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      // Primero intentar cargar datos reales
+      cargarResumen().catch(error => {
+        console.error('Error inicial:', error);
+        // Si falla, mostrar datos de ejemplo después de 3 segundos
+        setTimeout(() => {
+          Swal.fire({
+            icon: 'info',
+            title: 'Modo demostración',
+            text: 'Mostrando datos de ejemplo',
+            timer: 2000,
+            background: '#fff1f2'
+          });
+          initChartsWithSampleData();
+        }, 3000);
+      });
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

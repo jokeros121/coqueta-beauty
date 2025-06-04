@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reservas - Coqueta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 to-pink-100 min-h-screen p-4 md:p-6">
+  <div class="container mx-auto bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+    <!-- Encabezado -->
+    <div class="p-4 md:p-6">
+      <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-pink-700 mb-4 md:mb-0">
+          <i class="fas fa-calendar-check mr-2"></i>Gestión de Reservas
+        </h1>
+        <button 
+          class="px-4 py-2 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-lg hover:from-pink-600 hover:to-pink-700 transition-all duration-300 flex items-center group"
+          data-bs-toggle="modal" 
+          data-bs-target="#modalAgregar">
+          <i class="fas fa-plus-circle mr-2 group-hover:rotate-90 transition-transform"></i>Agregar Reserva
+        </button>
+      </div>
+
+      <!-- Filtros -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="fas fa-search text-pink-400"></i>
+          </div>
+          <input 
+            type="text" 
+            id="buscarId" 
+            class="w-full pl-10 pr-4 py-2 border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300" 
+            placeholder="Buscar por ID">
+        </div>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="fa-solid fa-scissors text-pink-400"></i>
+          </div>
+          <input 
+            type="text" 
+            id="buscarServicio" 
+            class="w-full pl-10 pr-4 py-2 border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300" 
+            placeholder="Buscar por Servicio">
+        </div>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="fas fa-calendar-day text-pink-400"></i>
+          </div>
+          <input 
+            type="date" 
+            id="buscarFecha" 
+            class="w-full pl-10 pr-4 py-2 border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300">
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div class="overflow-x-auto rounded-lg border border-pink-100 shadow-sm">
+        <table class="min-w-full divide-y divide-pink-200">
+          <thead class="bg-gradient-to-r from-pink-50 to-pink-100">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-pink-700 uppercase tracking-wider">ID</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-pink-700 uppercase tracking-wider">Cliente</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-pink-700 uppercase tracking-wider">Servicio</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-pink-700 uppercase tracking-wider">Profesional</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-pink-700 uppercase tracking-wider">Fecha</th>
+              <th class="px-6 py-3 text-center text-xs font-medium text-pink-700 uppercase tracking-wider">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-reservas" class="bg-white divide-y divide-pink-100"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Agregar Reserva -->
+  <div class="modal fade" id="modalAgregar" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content border-0 shadow-xl">
+        <form id="formReserva">
+          <div class="modal-header bg-gradient-to-r from-pink-500 to-pink-600 text-white">
+            <h5 class="modal-title flex items-center" id="modalAgregarLabel">
+              <i class="fas fa-calendar-plus mr-2"></i>Agregar Reserva
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-3">
+              <label class="block text-sm font-medium text-pink-700">Fecha y hora</label>
+              <input 
+                type="datetime-local" 
+                id="fecha" 
+                class="w-full px-4 py-2 border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300" 
+                required>
+            </div>
+            <div class="space-y-3">
+              <label class="block text-sm font-medium text-pink-700">Cliente</label>
+              <select 
+                id="clienteId" 
+                class="w-full px-4 py-2 border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300" 
+                required></select>
+            </div>
+            <div class="space-y-3">
+              <label class="block text-sm font-medium text-pink-700">Servicio</label>
+              <select 
+                id="servicioId" 
+                class="w-full px-4 py-2 border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300" 
+                required></select>
+            </div>
+            <div class="space-y-3">
+              <label class="block text-sm font-medium text-pink-700">Profesional</label>
+              <select 
+                id="profesionalId" 
+                class="w-full px-4 py-2 border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300" 
+                required></select>
+            </div>
+          </div>
+          <div class="modal-footer bg-pink-50">
+            <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all duration-300" data-bs-dismiss="modal">
+              <i class="fas fa-times mr-2"></i>Cancelar
+            </button>
+            <button type="submit" class="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-all duration-300 flex items-center group">
+              <i class="fas fa-save mr-2 group-hover:animate-bounce"></i>Guardar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tabla = document.getElementById("tabla-reservas");
+    const buscarId = document.getElementById("buscarId");
+    const buscarServicio = document.getElementById("buscarServicio");
+    const buscarFecha = document.getElementById("buscarFecha");
+
+    const token = localStorage.getItem("token");
+    const headers = {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    };
+
+    let reservas = [], clientes = [], servicios = [], profesionales = [];
+
+    async function fetchAll() {
+      try {
+        // Mostrar loader
+        const loader = Swal.fire({
+          title: 'Cargando datos',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading(),
+          background: '#fff1f2'
+        });
+
+        const [r1, r2, r3, r4] = await Promise.all([
+          fetch("https://coqueta.fluxis.com.co/api/reservas", { headers }),
+          fetch("https://coqueta.fluxis.com.co/api/clientes", { headers }),
+          fetch("https://coqueta.fluxis.com.co/api/servicios", { headers }),
+          fetch("https://coqueta.fluxis.com.co/api/profesionales", { headers })
+        ]);
+
+        reservas = await r1.json();
+        clientes = await r2.json();
+        servicios = await r3.json();
+        profesionales = await r4.json();
+
+        mostrarReservas(reservas);
+        llenarSelects();
+        
+        // Ocultar loader
+        await loader.close();
+      } catch (err) {
+        console.error(err);
+        Swal.fire({
+          icon: "error", 
+          title: "Error",
+          text: "No se pudieron cargar los datos.",
+          background: '#fff1f2',
+          color: '#831843',
+          confirmButtonColor: '#db2777'
+        });
+      }
+    }
+
+    function mostrarReservas(lista) {
+      tabla.innerHTML = "";
+      
+      if (lista.length === 0) {
+        const fila = `
+          <tr>
+            <td colspan="6" class="px-6 py-4 text-center text-pink-600">
+              <i class="fas fa-calendar-times text-3xl mb-2"></i>
+              <p class="font-medium">No se encontraron reservas</p>
+            </td>
+          </tr>`;
+        tabla.innerHTML = fila;
+        return;
+      }
+      
+      lista.forEach((r, index) => {
+        const cliente = clientes.find(c => c.id === r.cliente_id || c.id === r.clienteId);
+        const servicio = servicios.find(s => s.id === r.servicio_id || s.id === r.servicioId);
+        const profesional = profesionales.find(p => p.id === r.profesional_id || p.id === r.profesionalId);
+
+        const fila = document.createElement('tr');
+        fila.className = `hover:bg-pink-50 transition-colors duration-200 ${index % 2 === 0 ? 'bg-white' : 'bg-pink-50'}`;
+        fila.innerHTML = `
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${r.id}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${cliente ? cliente.nombres + ' ' + cliente.apellidos : 'Desconocido'}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${servicio ? servicio.nombre : 'Desconocido'}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${profesional ? profesional.nombres + ' ' + profesional.apellidos : 'Desconocido'}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${r.fecha?.replace("T", " ").substring(0, 16) || 'N/A'}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+            <button 
+              class="text-pink-600 hover:text-pink-900 mr-3 transition-colors duration-200 group"
+              onclick="eliminarReserva(${r.id})">
+              <i class="fas fa-trash-alt group-hover:scale-110 transition-transform"></i>
+            </button>
+          </td>
+        `;
+        
+        // Animación de aparición
+        fila.style.opacity = '0';
+        fila.style.transform = 'translateY(10px)';
+        fila.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        
+        tabla.appendChild(fila);
+        
+        // Aplicar animación con retardo basado en el índice
+        setTimeout(() => {
+          fila.style.opacity = '1';
+          fila.style.transform = 'translateY(0)';
+        }, 100 * index);
+      });
+    }
+
+    function filtrar() {
+      const id = buscarId.value.trim();
+      const servicioTexto = buscarServicio.value.trim().toLowerCase();
+      const fecha = buscarFecha.value;
+
+      let filtrado = reservas;
+
+      if (id) {
+        filtrado = filtrado.filter(r => r.id == id);
+      }
+
+      if (servicioTexto) {
+        filtrado = filtrado.filter(r => {
+          const servicio = servicios.find(s => s.id === r.servicio_id || s.id === r.servicioId);
+          return servicio && servicio.nombre.toLowerCase().includes(servicioTexto);
+        });
+      }
+
+      if (fecha) {
+        filtrado = filtrado.filter(r => r.fecha?.startsWith(fecha));
+      }
+
+      mostrarReservas(filtrado);
+    }
+
+    async function eliminarReserva(id) {
+      const confirmar = await Swal.fire({
+        title: "¿Eliminar esta reserva?",
+        text: "Esta acción no se puede deshacer",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#db2777",
+        cancelButtonColor: "#6b7280",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        background: '#fff1f2',
+        color: '#831843'
+      });
+
+      if (confirmar.isConfirmed) {
+        const loader = Swal.fire({
+          title: 'Eliminando reserva',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading(),
+          background: '#fff1f2'
+        });
+        
+        try {
+          const res = await fetch(`https://coqueta.fluxis.com.co/api/reservas/${id}`, {
+            method: "DELETE",
+            headers
+          });
+
+          await loader.close();
+          
+          if (res.ok) {
+            Swal.fire({
+              title: "Eliminado", 
+              text: "Reserva eliminada con éxito", 
+              icon: "success",
+              background: '#fff1f2',
+              color: '#831843',
+              confirmButtonColor: '#db2777'
+            });
+            fetchAll();
+          } else {
+            throw new Error();
+          }
+        } catch {
+          await loader.close();
+          Swal.fire({
+            title: "Error", 
+            text: "No se pudo eliminar la reserva", 
+            icon: "error",
+            background: '#fff1f2',
+            color: '#831843',
+            confirmButtonColor: '#db2777'
+          });
+        }
+      }
+    }
+
+    function llenarSelects() {
+      const clienteSelect = document.getElementById("clienteId");
+      const servicioSelect = document.getElementById("servicioId");
+      const profesionalSelect = document.getElementById("profesionalId");
+
+      clienteSelect.innerHTML = clientes.map(c =>
+        `<option value="${c.id}">${c.nombres} ${c.apellidos}</option>`).join("");
+
+      servicioSelect.innerHTML = servicios.map(s =>
+        `<option value="${s.id}">${s.nombre}</option>`).join("");
+
+      profesionalSelect.innerHTML = profesionales.map(p =>
+        `<option value="${p.id}">${p.nombres} ${p.apellidos}</option>`).join("");
+    }
+
+    document.getElementById("formReserva").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const loader = Swal.fire({
+        title: 'Guardando reserva',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+        background: '#fff1f2'
+      });
+      
+      try {
+        const fecha = document.getElementById("fecha").value;
+        const clienteId = parseInt(document.getElementById("clienteId").value);
+        const servicioId = parseInt(document.getElementById("servicioId").value);
+        const profesionalId = parseInt(document.getElementById("profesionalId").value);
+
+        const data = { fecha, clienteId, servicioId, profesionalId };
+
+        const res = await fetch("https://coqueta.fluxis.com.co/api/reservas", {
+          method: "POST",
+          headers,
+          body: JSON.stringify(data)
+        });
+
+        await loader.close();
+        
+        if (res.ok) {
+          Swal.fire({
+            title: "Guardado", 
+            text: "Reserva creada con éxito", 
+            icon: "success",
+            background: '#fff1f2',
+            color: '#831843',
+            confirmButtonColor: '#db2777'
+          });
+          document.getElementById("formReserva").reset();
+          bootstrap.Modal.getInstance(document.getElementById("modalAgregar")).hide();
+          fetchAll();
+        } else {
+          throw new Error();
+        }
+      } catch {
+        await loader.close();
+        Swal.fire({
+          title: "Error", 
+          text: "No se pudo guardar la reserva", 
+          icon: "error",
+          background: '#fff1f2',
+          color: '#831843',
+          confirmButtonColor: '#db2777'
+        });
+      }
+    });
+
+    // Búsqueda con debounce para mejor performance
+    let searchTimeout;
+    buscarId.addEventListener("input", () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(filtrar, 300);
+    });
+    buscarServicio.addEventListener("input", () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(filtrar, 300);
+    });
+    buscarFecha.addEventListener("change", filtrar);
+
+    // Cargar datos al iniciar
+    document.addEventListener("DOMContentLoaded", fetchAll);
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

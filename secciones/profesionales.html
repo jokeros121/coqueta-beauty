@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Profesionales - Coqueta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 to-pink-100 min-h-screen p-4 md:p-6">
+  <div class="container mx-auto bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+    <!-- Encabezado -->
+    <div class="p-4 md:p-6">
+      <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-pink-700 mb-4 md:mb-0">
+          <i class="fas fa-user-tie mr-2"></i>Gestión de Profesionales
+        </h1>
+      </div>
+
+      <!-- Búsqueda -->
+      <div class="relative mb-6">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <i class="fas fa-search text-pink-400"></i>
+        </div>
+        <input 
+          type="text" 
+          id="buscarProfesional" 
+          class="w-full pl-10 pr-4 py-2 border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300" 
+          placeholder="Buscar por nombre, apellido o documento">
+      </div>
+
+      <!-- Tabla -->
+      <div class="overflow-x-auto rounded-lg border border-pink-100 shadow-sm">
+        <table class="min-w-full divide-y divide-pink-200">
+          <thead class="bg-gradient-to-r from-pink-50 to-pink-100">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-pink-700 uppercase tracking-wider">ID</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-pink-700 uppercase tracking-wider">Documento</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-pink-700 uppercase tracking-wider">Nombres</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-pink-700 uppercase tracking-wider">Apellidos</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-pink-700 uppercase tracking-wider">Nacimiento</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-profesionales" class="bg-white divide-y divide-pink-100"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tabla = document.getElementById("tabla-profesionales");
+    const buscar = document.getElementById("buscarProfesional");
+    const token = localStorage.getItem("token");
+    const headers = { 
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    };
+
+    let profesionales = [];
+
+    async function cargarProfesionales() {
+      try {
+        // Mostrar loader
+        const loader = Swal.fire({
+          title: 'Cargando profesionales',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading(),
+          background: '#fff1f2'
+        });
+
+        const res = await fetch("https://coqueta.fluxis.com.co/api/profesionales", { headers });
+        if (!res.ok) throw new Error("Error cargando profesionales");
+        profesionales = await res.json();
+        
+        // Ocultar loader
+        await loader.close();
+        
+        mostrarProfesionales(profesionales);
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.message,
+          background: '#fff1f2',
+          color: '#831843',
+          confirmButtonColor: '#db2777'
+        });
+      }
+    }
+
+    function mostrarProfesionales(lista) {
+      tabla.innerHTML = "";
+      
+      if (lista.length === 0) {
+        const fila = `
+          <tr>
+            <td colspan="5" class="px-6 py-4 text-center text-pink-600">
+              <i class="fas fa-user-slash text-3xl mb-2"></i>
+              <p class="font-medium">No se encontraron profesionales</p>
+            </td>
+          </tr>`;
+        tabla.innerHTML = fila;
+        return;
+      }
+      
+      lista.forEach((p, index) => {
+        const fila = document.createElement('tr');
+        fila.className = `hover:bg-pink-50 transition-colors duration-200 ${index % 2 === 0 ? 'bg-white' : 'bg-pink-50'}`;
+        fila.innerHTML = `
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${p.id}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${p.documento}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">${p.nombres}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${p.apellidos}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${p.fechaNacimiento}</td>
+        `;
+        
+        // Animación de aparición
+        fila.style.opacity = '0';
+        fila.style.transform = 'translateY(10px)';
+        fila.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        
+        tabla.appendChild(fila);
+        
+        // Aplicar animación con retardo basado en el índice
+        setTimeout(() => {
+          fila.style.opacity = '1';
+          fila.style.transform = 'translateY(0)';
+        }, 100 * index);
+      });
+    }
+
+    // Búsqueda con debounce para mejor performance
+    let searchTimeout;
+    buscar.addEventListener("input", () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        const filtro = buscar.value.trim().toLowerCase();
+        const filtrados = profesionales.filter(p =>
+          p.nombres.toLowerCase().includes(filtro) ||
+          p.apellidos.toLowerCase().includes(filtro) ||
+          p.documento.includes(filtro)
+        );
+        mostrarProfesionales(filtrados);
+      }, 300);
+    });
+
+    // Cargar profesionales al iniciar
+    document.addEventListener("DOMContentLoaded", cargarProfesionales);
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
